@@ -385,6 +385,46 @@ for (int right = 0; right < n; right++) {
 }
 ```
 
+### 209. 长度最小的子数组
+
+> 不定长滑动窗口 · 求最短/最小 · 首题
+
+**与求最长模式的核心区别：**
+
+| | 求最长 | 求最短 |
+|--|--------|--------|
+| while 条件 | 不满足时收缩 | 满足时收缩 |
+| 更新时机 | 收缩后更新 | 收缩前更新 |
+| 答案公式 | `max(ans, right-left+1)` | `min(ans, right-left+1)` |
+
+**模板对比：**
+```cpp
+// 求最长：扩 → 缩到合法 → 更新
+while (不满足) { left++; }
+ans = max(ans, right - left + 1);
+
+// 求最短：扩 → 满足时更新 → 缩到不满足
+while (满足) {
+    ans = min(ans, right - left + 1);
+    left++;
+}
+```
+
+**关键：** 最短模式在 `while` **条件成立时**先记录答案再收缩，因为收缩后的窗口不再满足条件，所以要在收缩前抓住最短的那一瞬间。
+
+```cpp
+int ans = INT_MAX, sum = 0, left = 0;
+for (int right = 0; right < n; right++) {
+    sum += nums[right];
+    while (sum >= target) {
+        ans = min(ans, right - left + 1);
+        sum -= nums[left];
+        left++;
+    }
+}
+return ans < INT_MAX ? ans : 0;
+```
+
 ### 1456. 定长子串中元音的最大数目
 
 > 定长滑动窗口 · 基础题
